@@ -18,6 +18,7 @@ public class Excel_IO {
 
     }
 
+    /*
     public void create_exceldocument(String filename) throws Exception{
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -62,6 +63,49 @@ public class Excel_IO {
         out.close();
         System.out.println("Writesheet.xlsx written successfully");
     }
+     */
+
+    public void initializeUserData(int amountofquestions) throws Exception{
+
+        String path = System.getProperty("user.dir") + "\\ExcelData\\UserData.xlsx";
+        File tempFile = new File(path);
+        if(!tempFile.exists()){
+            System.out.println("New File Created");
+            XSSFWorkbook workbook = new XSSFWorkbook();
+
+            XSSFSheet spreadsheet = workbook.createSheet(" User Data");
+            XSSFRow row;
+
+            ArrayList<Object []> empinfo = new ArrayList<>();
+
+            empinfo.add( new Object[] { "UserCount", "0"});
+            empinfo.add( new Object[] { "QuestionCount", amountofquestions +""});
+            empinfo.add( new Object[] { "QuestionNumber"});
+
+            for(int i = 0; i <= amountofquestions; i++){
+                empinfo.add(new Object[] { i + ""});
+            }
+            System.out.println(empinfo);
+
+            for (int i = 0; i < empinfo.size(); i++) {
+                row = spreadsheet.createRow(i);
+                Object [] objectArr = empinfo.get(i);
+                int cellid = 0;
+
+                for (Object obj : objectArr) {
+                    Cell cell = row.createCell(cellid++);
+                    cell.setCellValue((String)obj);
+                }
+            }
+
+            spreadsheet.autoSizeColumn(0);
+            spreadsheet.autoSizeColumn(1);
+            FileOutputStream out = new FileOutputStream(new File(path));
+
+            workbook.write(out);
+            out.close();
+        }
+    }
 
     public ArrayList<ArrayList<String>> open_exceldocument(String filename) throws Exception{
 
@@ -73,9 +117,9 @@ public class Excel_IO {
         XSSFSheet spreadsheet = workbook.getSheetAt(0);
         Iterator < Row >  rowIterator = spreadsheet.iterator();
 
-        ArrayList<ArrayList<String>> output = new ArrayList<ArrayList<String>>();
+        ArrayList<ArrayList<String>> output = new ArrayList<>();
 
-        ArrayList<String> tmp_row = new ArrayList<String>();
+        ArrayList<String> tmp_row = new ArrayList<>();
 
         while (rowIterator.hasNext()) {
             row = (XSSFRow) rowIterator.next();
